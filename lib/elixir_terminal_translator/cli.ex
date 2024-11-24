@@ -1,14 +1,16 @@
 defmodule ElixirTerminalTranslator.CLI do
-  import ElixirTerminalTranslator.Options
+  import ElixirTerminalTranslator.Options, only: [aliases: 0, options: 0]
 
   def main(args) do
 
     {parsed, args, invalid} = OptionParser.parse(args, aliases: aliases(), strict: options())
+    IO.inspect(parsed)
+    IO.inspect(args)
+    IO.inspect(invalid)
 
-    {help_active, parsed_without_help} = Keyword.pop(parsed, :help, default: :false)
 
-    if help_active do
-      ElixirTerminalTranslator.Help.help(parsed_without_help, args, invalid)
+    if Keyword.has_key?(parsed, :help) do
+      ElixirTerminalTranslator.Help.help(parsed, args, invalid)
     else
       warn_invalid(invalid)
       ElixirTerminalTranslator.Translator.translate(args, parsed)
@@ -21,25 +23,23 @@ defmodule ElixirTerminalTranslator.CLI do
 
   defp warn_invalid(invalid_opts) do
     for e <- invalid_opts do
-      case e do
-        {option_name, nil} -> warning("#{option_name} is not a valid flag")
-
-        {option_name, value} ->
-          atom = to_atom(option_name)
-          val_type = options()[atom]
-          warning("Incorrect type: Expected #{option_name} <#{val_type}> but got `#{value}`")
-      end
+      ElixirTerminalTranslator.Help.explain_invalid_option(e)
     end
     info("Use --help <your_options> for more information! \n")
   end
 
-  defp warning(text) do
+  def warning(text) do
     IO.ANSI.format([:yellow,  "WARNING! #{text}"])
     |> IO.puts()
   end
 
-  defp info(text) do
+  def info(text) do
     IO.ANSI.format([:light_magenta, "INFO! #{text}"])
+    |> IO.puts()
+  end
+
+  def help_info(text) do
+    IO.ANSI.format([:green, "HELP! #{text}"])
     |> IO.puts()
   end
 end
