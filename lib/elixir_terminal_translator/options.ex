@@ -7,15 +7,20 @@ defmodule ElixirTerminalTranslator.Options do
     path: :string,
     in_lang: :string,
     out_lang: :string,
+    translator: :string,
+    set_api_key: :string,
   ]
 
   @explanations %{
-    help: "--help, -h: Boolean flag, explains every option and argument given, if there are no arguments explains everything",
-    version: "--version, -v: Boolean flag, prints out the version of the program",
-    file: "--file, -f: <path/to/file.txt> An input file to translate text from",
-    path: "--path, -p: <path/to/out_dir> The directory where the translated file goes, will be named <file_name>_<Iso-639-letters>",
-    in_lang: "--in-lang, -i: <ISO-639-two-letter-language-code> sets the input language for the translator \n Example: -i en for english",
-    out_lang: "--out-lang, -o: <ISO-639-two-letter-language-code> sets the output language for the translator \n Example: -o de for german",
+    help: "--help, -h Boolean flag, explains every option and argument given, if there are no arguments explains everything",
+    version: "--version, -v Boolean flag, prints out the version of the program",
+    file: "--file, -f <path/to/file.txt> An input file to translate text from",
+    path: "--path, -p <path/to/out_dir> The directory where the translated file goes, will be named <file_name>_<Iso-639-letters>",
+    in_lang: "--in-lang, -i <ISO-639-two-letter-language-code> sets the input language for the translator \n Example: -i en for english",
+    out_lang: "--out-lang, -o <ISO-639-two-letter-language-code> sets the output language for the translator \n Example: -o de for german",
+    set_api_key: "--set-api-key google:<your-google-key>&deepl:<your-deepl-key> sets the api keys, expects at least 1 key \n
+                  Example: --set-api-key deepl:b013c98f-b880-4e13-823e-c2597db9da6e&google:AIzaSyA8FJ3V0VzG-2pPQ6do3vH7V8W8h0h6HLoA",
+    translator: "--translator, -t google | deepl sets the translator you want to translate with"
   }
 
   @aliases [
@@ -25,24 +30,19 @@ defmodule ElixirTerminalTranslator.Options do
     f: :file,
     o: :out_lang,
     i: :in_lang,
+    t: :translator,
   ]
 
-  def options do
-    @options
-  end
+  def options, do: @options
 
-  def aliases do
-    @aliases
-  end
+  def aliases, do: @aliases
+
+  def explanation(opt_atom) when is_atom(opt_atom), do: @explanations[opt_atom]
 
   def to_atom(option) when is_binary(option) do
     option
     |> String.trim_leading("-")
     |> String.replace("-", "_")
     |> String.to_atom()
-  end
-
-  def explanation(opt_atom) do
-    @explanations[opt_atom]
   end
 end

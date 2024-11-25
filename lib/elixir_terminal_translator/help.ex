@@ -1,10 +1,11 @@
 defmodule ElixirTerminalTranslator.Help do
 import ElixirTerminalTranslator.Options
 import ElixirTerminalTranslator.CLI, only: [warning: 1, help_info: 1]
-  def help([{:help, true}], [], []) do
+  def help([{:help, true}], "", []) do
     overview()
   end
 
+  @spec help(Keyword.t(), String.t(), Keyword.t()) :: nil
   def help(opts, text, invalid_opts) do
     for option <- opts do
       explain_option(option)

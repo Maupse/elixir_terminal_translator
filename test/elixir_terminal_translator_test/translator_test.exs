@@ -1,0 +1,3 @@
+defmodule ElixirTerminalTranslatorTest.TranslatorTest do
+
+end

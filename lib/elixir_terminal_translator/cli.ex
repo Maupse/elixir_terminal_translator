@@ -2,6 +2,7 @@ defmodule ElixirTerminalTranslator.CLI do
   import ElixirTerminalTranslator.Options, only: [aliases: 0, options: 0]
 
   def main(args) do
+    IO.puts("Config #{inspect(ElixirTerminalTranslator.Translator.Config.load_config())}")
 
     {parsed, args, invalid} = OptionParser.parse(args, aliases: aliases(), strict: options())
     IO.inspect(parsed)
@@ -9,11 +10,13 @@ defmodule ElixirTerminalTranslator.CLI do
     IO.inspect(invalid)
 
 
+    text = Enum.join(args, " ")
+
     if Keyword.has_key?(parsed, :help) do
-      ElixirTerminalTranslator.Help.help(parsed, args, invalid)
+      ElixirTerminalTranslator.Help.help(parsed, text, invalid)
     else
       warn_invalid(invalid)
-      ElixirTerminalTranslator.Translator.translate(args, parsed)
+      ElixirTerminalTranslator.Translator.translate(text, parsed)
     end
   end
 
@@ -30,6 +33,11 @@ defmodule ElixirTerminalTranslator.CLI do
 
   def warning(text) do
     IO.ANSI.format([:yellow,  "WARNING! #{text}"])
+    |> IO.puts()
+  end
+
+  def error(reason) do
+    IO.ANSI.format([:red,  "ERROR! #{inspect(reason)}"])
     |> IO.puts()
   end
 
