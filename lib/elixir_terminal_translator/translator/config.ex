@@ -6,7 +6,7 @@ import ElixirTerminalTranslator.CLI, only: [info: 1]
   end)
 
   @config_file_path Path.join(@config_path, "config.json")
-  @key_file_path Path.join(@config_path, "keys")
+  @key_file_path Path.join(@config_path, "keys.json")
 
   @default_config %{
     :in => "auto",
@@ -21,11 +21,6 @@ import ElixirTerminalTranslator.CLI, only: [info: 1]
     # We make this check because otherwise we will get an :enoent error as elixir can't write on a non-existing path
     if not File.exists?(@config_file_path) do
       info("No config detected, creating new at #{@config_file_path}")
-
-      if not File.dir?(@config_path) do
-        File.mkdir_p!(@config_path)
-      end
-
       with {:ok, map} <- write_config(@default_config)
       do map # Returns new map, created because the path or file did not exist yet
       else
@@ -55,9 +50,35 @@ import ElixirTerminalTranslator.CLI, only: [info: 1]
     end
   end
 
+  @spec write_key(String.t(), String.t()) :: :ok | {:error, String.t()}
+  def write_key(translator, api_key) do
+    if Map.has_key?(ElixirTerminalTranslator.Translator.translators(), translator) do
+      case File.exists?(@key_file_path) do
+        false ->
+          {:ok, json} = Jason.encode(%{translator => api_key})
+          File.write(@key_file_path, json)
+          :ok
+        true ->
+          with {:ok, binary} <- File.read(@key_file_path),
+            {:ok, map} <- Jason.decode(binary),
+            map <- Map.put(map, translator, api_key),
+            {:ok, binary} <- Jason.encode(map),
+            :ok <- File.write(@key_file_path, binary)
+          do :ok
+          else
+            {:error, someshit} -> {:error, "Couldn't write key because of error #{inspect(someshit)}"}
+          end
+      end
+    end
+  end
+
   @spec write_config(map()) :: {:ok, map()} | {:error, Jason.EncodeError.t() | File.posix() | String.t() | Exception.t()}
   def write_config(map) when is_map(map) do
     info("Writing new config to #{inspect(@config_file_path)}")
+
+    if not File.dir?(@config_path) do
+      File.mkdir_p!(@config_path)
+    end
 
     with true <- valid?(map),
       {:ok, json} <- Jason.encode(map),
@@ -80,17 +101,15 @@ import ElixirTerminalTranslator.CLI, only: [info: 1]
 
   @spec get_key(String.t()) :: {:ok, String.t()} | {:error, String.t()}
   def get_key(translator) do
-    if File.dir?(@config_path) and File.exists?(@key_file_path) do
-      case File.read(@key_file_path) do
-        {:ok, binary} -> String.split(binary, "\n", trim: true) # Splits every line with an api key ["line1", "line2"]
-          |> Enum.map(&String.split(&1, ":", trim: true)) # Splits the translator: API-Key into ["translator", " API-Key\r"]
-          |> Enum.find_value(fn [tl, api_key_untrimmed] when tl == translator ->
-              {:ok, String.replace(api_key_untrimmed, [" ", "\r"], "")} # Cleans up the key and returns it here
-          end)
-        {:error, reason} -> {:error, reason}
-      end
+    with :true <- File.dir?(@config_path) and File.exists?(@key_file_path),
+      {:ok, binary} <- File.read(@key_file_path),
+      {:ok, map} <- Jason.decode(binary),
+      key when not is_nil(key) <- Map.get(map, translator)
+    do {:ok, key}
     else
-      {:error, "It seems like there are no API keys entered yet, use --help --set-api-key for more information"}
+      false -> {:error, "It seems like there are no API keys entered yet, use --help --set-api-key for more information"}
+      {:error, reason} -> {:error, reason}
+      nil -> {:error, "Key was not found in key file for translator #{translator}"}
     end
   end
 end

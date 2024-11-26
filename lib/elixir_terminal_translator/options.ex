@@ -16,7 +16,7 @@ defmodule ElixirTerminalTranslator.Options do
     path: "--path, -p <path/to/out_dir> The directory where the translated file goes, will be named <file_name>_<Iso-639-letters>",
     in: "--in, -i <ISO-639-two-letter-language-code> sets the input language for the translator \n Example: -i en for english",
     out: "--out, -o <ISO-639-two-letter-language-code> sets the output language for the translator \n Example: -o de for german",
-    set_api_key: "--set-api-key google:<your-google-key>&deepl:<your-deepl-key> sets the api keys, expects at least 1 key \n Example: --set-api-key deepl:b013c98f-b880-4e13-823e-c2597db9da6e&google:AIzaSyA8FJ3V0VzG-2pPQ6do3vH7V8W8h0h6HLoA",
+    set_api_key: "--set-api-key google:<your-google-key>&deepl:<your-deepl-key> sets API key (You need to activate it for Translation)\n Example: --set-api-key google:AIzaSyA8FJ3V0VzG-2pPQ6do3vH7V8W8h0h6HLoA",
     translator: "--translator, -t google | deepl sets the translator you want to translate with"
   }
 

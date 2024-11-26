@@ -3,7 +3,7 @@ alias ElixirTerminalTranslator.Translator.Config, as: Config
 alias ElixirTerminalTranslator.Translator.Codes, as: Codes
 import ElixirTerminalTranslator.CLI, only: [error: 1, info: 1, translation_info: 1]
 
-  @spec translate(String.t(), Keyword.t()) :: :ok | :error | :nil
+  @spec translate(String.t(), Keyword.t()) :: :ok | :nil
   def translate(text, opts) do
     with {:ok, config} <- Config.load_config(),
       config <- update_config(config, opts),
@@ -12,11 +12,13 @@ import ElixirTerminalTranslator.CLI, only: [error: 1, info: 1, translation_info:
       {:ok, translation} <- request_translation(config.translator, config.in, config.out, text)
     do process_translation(config, translation)
     else
+      nil -> error("i dont get it")
       {:error, reason} -> error(reason)
       {:info, message} -> info(message)
     end
   end
 
+  @spec update_config(map(), map()) :: map()
   defp update_config(config, opts) do
     Map.merge(config, Enum.into(opts, %{}), fn _k, _v1, v2 -> v2 end)
   end
@@ -39,6 +41,12 @@ import ElixirTerminalTranslator.CLI, only: [error: 1, info: 1, translation_info:
     IO.puts("Version: #{version}")
   end
 
+  if Map.has_key?(config, :set_api_key) do
+    case ElixirTerminalTranslator.Translator.Config.write_key(config.translator, config.set_api_key) do
+      {:error, message} -> error(message)
+    end
+  end
+
   :ok
  end
 
@@ -47,6 +55,9 @@ import ElixirTerminalTranslator.CLI, only: [error: 1, info: 1, translation_info:
     "google" => %{client: &Google.client/0, url: &Google.url/0, body: &Google.body/3, extract: &Google.extract/1}
   }
 
+  def translators, do: @translators
+
+  @spec request_translation(String.t(), String.t(), String.t(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
   def request_translation(translator, inp, out, text) do
     with %{client: client, url: url, body: body, extract: extract} <- @translators[translator],
       {:ok, cli} <- client.(), # This also checks the key
