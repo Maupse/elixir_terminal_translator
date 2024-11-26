@@ -1,6 +1,6 @@
 defmodule ElixirTerminalTranslator.Help do
 import ElixirTerminalTranslator.Options
-import ElixirTerminalTranslator.CLI, only: [warning: 1, help_info: 1]
+import ElixirTerminalTranslator.CLI, only: [warning: 1, help_info: 1, info: 1]
   def help([{:help, true}], "", []) do
     overview()
   end
@@ -19,11 +19,16 @@ import ElixirTerminalTranslator.CLI, only: [warning: 1, help_info: 1]
   end
 
   def overview() do
-    IO.puts("Overview")
+    for val <- Map.values(explanations()), do: help_info(val)
+    IO.puts("Fast syntax is: tl :<out-code> :<in-code> flags text (if there is one it will be counted as out)")
+    IO.puts("You can set flags with --this-is-a-flag <argument> (no arguments for boolean flags)")
+    IO.puts("Flags have to come before the text, only the head gets parsed")
   end
 
   defp explain_text(text) do
-    IO.puts("explain text #{text}")
+    if text != "" do
+      info("This counts as text: #{text}")
+    end
   end
 
 

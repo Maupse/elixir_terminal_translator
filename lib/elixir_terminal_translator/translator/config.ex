@@ -9,8 +9,8 @@ import ElixirTerminalTranslator.CLI, only: [info: 1]
   @key_file_path Path.join(@config_path, "keys")
 
   @default_config %{
-    :in_lang => "auto",
-    :out_lang => "en",
+    :in => "auto",
+    :out => "en",
     :translator => "google",
   }
 
@@ -19,9 +19,14 @@ import ElixirTerminalTranslator.CLI, only: [info: 1]
   @spec load_config() :: {:ok, map()} | {:error, Jason.DecodeError.t() | File.posix() | Jason.EncodeError.t() | Exception.t()}
   def load_config() do
     # We make this check because otherwise we will get an :enoent error as elixir can't write on a non-existing path
-    if not File.dir?(@config_path) or not File.exists?(@config_file_path) do
-      with :ok <- File.mkdir(@config_path),
-        {:ok, map} <- write_config(@default_config)
+    if not File.exists?(@config_file_path) do
+      info("No config detected, creating new at #{@config_file_path}")
+
+      if not File.dir?(@config_path) do
+        File.mkdir_p!(@config_path)
+      end
+
+      with {:ok, map} <- write_config(@default_config)
       do map # Returns new map, created because the path or file did not exist yet
       else
         {:error, reason} -> {:error, reason}
