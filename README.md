@@ -14,3 +14,8 @@ Then just run
 scoop install elixir-terminal-translator
 ```
 
+## Basic Usage
+
+```pwsh
+tl --help
+```
