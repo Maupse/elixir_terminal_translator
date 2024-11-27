@@ -1,21 +1,13 @@
 # ElixirTerminalTranslator
 
-**TODO: Add description**
+A Translator that uses google API to translate inside the terminal.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `elixir_terminal_translator` to your list of dependencies in `mix.exs`:
+Using scoop you can add the Bucket https://github.com/Maupse/MaupScoopBucket
 
-```elixir
-def deps do
-  [
-    {:elixir_terminal_translator, "~> 0.1.0"}
-  ]
-end
+Then just run
+```pwsh
+scoop install elixir-terminal-translator
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/elixir_terminal_translator>.
 
