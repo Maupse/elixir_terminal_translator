@@ -20,9 +20,9 @@ import ElixirTerminalTranslator.CLI, only: [warning: 1, help_info: 1, info: 1]
 
   def overview() do
     for val <- Map.values(explanations()), do: help_info(val)
-    IO.puts("Fast syntax is: tl :<out-code> :<in-code> flags text (if there is one it will be counted as out)")
-    IO.puts("You can set flags with --this-is-a-flag <argument> (no arguments for boolean flags)")
-    IO.puts("Flags have to come before the text, only the head gets parsed")
+    info("Fast syntax is: tl :<out-code> :<in-code> flags text (if there is one it will be counted as out)")
+    info("You can set flags with --this-is-a-flag <argument> (no arguments for boolean flags)")
+    info("Flags have to come before the text, only the head gets parsed")
   end
 
   defp explain_text(text) do
