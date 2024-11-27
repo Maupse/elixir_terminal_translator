@@ -64,6 +64,11 @@ defmodule ElixirTerminalTranslator.CLI do
     |> IO.puts()
   end
 
+  def response(text) do
+    IO.ANSI.format([:blue, "Response! #{text}"])
+    |> IO.puts()
+  end
+
   def help_info(text) do
     IO.ANSI.format([:green, "HELP! #{text}"])
     |> IO.puts()

@@ -1,7 +1,7 @@
 defmodule ElixirTerminalTranslator.Translator do
 alias ElixirTerminalTranslator.Translator.Config, as: Config
 alias ElixirTerminalTranslator.Translator.Codes, as: Codes
-import ElixirTerminalTranslator.CLI, only: [error: 1, info: 1, translation_info: 1]
+import ElixirTerminalTranslator.CLI, only: [error: 1, info: 1, translation_info: 1, response: 1]
 
   @spec translate(String.t(), Keyword.t()) :: :ok | :nil
   def translate(text, opts) do
@@ -12,9 +12,10 @@ import ElixirTerminalTranslator.CLI, only: [error: 1, info: 1, translation_info:
       {:ok, translation} <- request_translation(config.translator, config.in, config.out, text)
     do process_translation(config, translation)
     else
-      nil -> error("i dont get it")
       {:error, reason} -> error(reason)
       {:info, message} -> info(message)
+      nil -> error("ElixirTerminalTranslator.Translator.translate/2 matched nil in the with clause, this should never happen")
+      other -> error("ElixirTerminalTranslator.Translator.translate/2 matched #{inspect(other)} in the with clause, this should never happen")
     end
   end
 
@@ -34,11 +35,11 @@ import ElixirTerminalTranslator.CLI, only: [error: 1, info: 1, translation_info:
 
  @spec parse_configuration(map()) :: :ok | {:error, String.t()}
  def parse_configuration(config) do
-  IO.puts("Parse config #{inspect(config)}")
+  info("Parse config #{inspect(config)}")
 
   if Map.has_key?(config, :version) and config.version == true do
     version = Application.spec(:elixir_terminal_translator, :vsn) |> to_string()
-    IO.puts("Version: #{version}")
+    response("Version: #{version}")
   end
 
   if Map.has_key?(config, :set_api_key) do
