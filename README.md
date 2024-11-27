@@ -29,8 +29,7 @@ Then just run
 --path, -p <path/to/out_dir> The directory where the translated file goes, will be named <file_name>_<Iso-639-letters>
 --help, -h Boolean flag, explains every option and argument given, if there are no arguments explains everything
 --translator, -t google | deepl sets the translator you want to translate with
---set-api-key google:<your-google-key>&deepl:<your-deepl-key> sets API key (You need to activate it for Translation)
---set-api-key google:AIzaSyA8FJ3V0VzG-2pPQ6do3vH7V8W8h0h6HLoA
+--set-api-key, -s <API-KEY>, sets API key for the current translator
 
 Fast syntax is: tl :<out-code> :<in-code> flags text (if there is one it will be counted as out)
 You can set flags with --this-is-a-flag <argument> (no arguments for boolean flags)

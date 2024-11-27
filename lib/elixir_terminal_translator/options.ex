@@ -16,7 +16,7 @@ defmodule ElixirTerminalTranslator.Options do
     path: "--path, -p <path/to/out_dir> The directory where the translated file goes, will be named <file_name>_<Iso-639-letters>",
     in: "--in, -i <ISO-639-two-letter-language-code> sets the input language for the translator \n Example: -i en for english",
     out: "--out, -o <ISO-639-two-letter-language-code> sets the output language for the translator \n Example: -o de for german",
-    set_api_key: "--set-api-key <API-KEY>, sets API key for the current translator",
+    set_api_key: "--set-api-key, -s <API-KEY>, sets API key for the current translator",
     translator: "--translator, -t google | deepl sets the translator you want to translate with"
   }
 
@@ -27,6 +27,7 @@ defmodule ElixirTerminalTranslator.Options do
     o: :out,
     i: :in,
     t: :translator,
+    s: :set_api_key,
   ]
 
   def options, do: @options
