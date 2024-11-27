@@ -19,6 +19,8 @@ Then just run
 ```pwsh
 > tl --help
 ```
+
+```
 --in, -i <ISO-639-two-letter-language-code> sets the input language for the translator 
  Example: -i en for english
 --out, -o <ISO-639-two-letter-language-code> sets the output language for the translator 
@@ -33,3 +35,4 @@ Then just run
 Fast syntax is: tl :<out-code> :<in-code> flags text (if there is one it will be counted as out)
 You can set flags with --this-is-a-flag <argument> (no arguments for boolean flags)
 Flags have to come before the text, only the head gets parsed
+```
