@@ -46,6 +46,7 @@ jobs:
             id-token: write
         steps:
             - name: Download Artifact
+              id: release
               uses: actions/download-artifact@v3
               with:
                 name: escript-binary
@@ -64,6 +65,7 @@ jobs:
             - name: Upload Binary to Release
               uses: actions/upload-release-asset@v1
               with:
+                  upload_url: ${{steps.release.outputs.upload_url}}
                   asset_path: ./tl
                   asset_name: tl
                   asset_content_type: application/octet-stream
