@@ -44,6 +44,7 @@ import ElixirTerminalTranslator.CLI, only: [error: 1, info: 1, translation_info:
 
   if Map.has_key?(config, :set_api_key) do
     case ElixirTerminalTranslator.Translator.Config.write_key(config.translator, config.set_api_key) do
+      :ok -> info("Set new API key for #{config.translator}")
       {:error, message} -> error(message)
     end
   end
