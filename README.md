@@ -6,7 +6,7 @@ A Translator that uses google API to translate inside the terminal.
 
 Using scoop you can add the Bucket https://github.com/Maupse/SlimeBucket
 ```pwsh
-> scoop bucket add MaupScoopBucket "https://github.com/maupse/SlimeBucket"
+> scoop bucket add SlimeBucket "https://github.com/maupse/SlimeBucket"
 ```
 
 Then just run
