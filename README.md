@@ -4,9 +4,9 @@ A Translator that uses google API to translate inside the terminal.
 
 ## Installation
 
-Using scoop you can add the Bucket https://github.com/Maupse/MaupScoopBucket
+Using scoop you can add the Bucket https://github.com/Maupse/SlimeBucket
 ```pwsh
-> scoop bucket add MaupScoopBucket "https://github.com/maupse/MaupScoopBucket"
+> scoop bucket add MaupScoopBucket "https://github.com/maupse/SlimeBucket"
 ```
 
 Then just run
